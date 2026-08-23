@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Gestión de Contratistas - Rio Tinto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rt-red: #ED1C24;
+            --rt-blue: #0087FA;
+            --rt-navy: #001B39;
+            --rt-dark: #1D1D1F;
+            --rt-bg: #FFFFFF;
+            --rt-secondary-bg: #F5F5F7;
+        }
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--rt-bg); 
+            color: var(--rt-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAVEGACIÓN ESTILO APPLE */
+        nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+        nav a {
+            color: var(--rt-dark);
+            opacity: 0.7;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        nav a:hover, nav a.active-link {
+            opacity: 1;
+            color: var(--rt-blue);
+        }
+
+        /* CARRUSEL CON CONTROLES */
+        .swiper-main { width: 100%; height: calc(100vh - 160px); }
+        .info-box { 
+            background: white; 
+            max-width: 520px; 
+            padding: 3rem; 
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+            z-index: 10;
+        }
+        .slide-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.95); }
+        
+        /* Flechas Minimalistas */
+        .swiper-button-next, .swiper-button-prev {
+            color: var(--rt-dark) !important;
+            background: rgba(255,255,255,0.7);
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px !important; font-weight: bold; }
+        .swiper-button-next:hover, .swiper-button-prev:hover { background: white; transform: scale(1.1); }
+
+        .btn-link { 
+            color: var(--rt-blue); 
+            font-weight: 600; 
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 1.5rem;
+        }
+        .btn-link:hover { text-decoration: underline; }
+
+        /* SECCIONES */
+        .page-section { display: none; padding: 5rem 0; }
+        .page-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card-apple {
+            background: var(--rt-secondary-bg);
+            border-radius: 22px;
+            padding: 2.5rem;
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: transform 0.2s ease;
+        }
+        .card-apple:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        /* BOTÓN REPOSITORIO */
+        .btn-repo {
+            background-color: var(--rt-blue);
+            color: white;
+            padding: 1.25rem 2.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 135, 250, 0.2);
+        }
+        .btn-repo:hover { background-color: var(--rt-navy); transform: scale(1.03); }
+        .note-text { font-size: 0.85rem; color: #86868b; font-style: italic; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="py-6 px-10 flex flex-col md:flex-row justify-between items-center bg-white">
+        <div class="flex items-center gap-8">
+            <!-- LOGOTIPO OFICIAL ROJO -->
+            <img src="./assets/Logo Rio Tinto.jpg" 
+                 alt="Rio Tinto" class="h-9 object-contain">
+            <span class="h-6 w-[1px] bg-gray-200 hidden md:block"></span>
+            <span class="text-[10px] font-black tracking-[0.3em] text-gray-400 uppercase">CMXAR</span>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 mt-4 md:mt-0">
+            Bienvenido al Portal de Gestión de Contratistas
+        </h1>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="sticky top-0 z-50 py-4">
+        <div class="container mx-auto flex flex-wrap justify-center gap-8 md:gap-14 text-[11px] uppercase font-bold tracking-widest">
+            <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="#" onclick="showSection('plataformas')"><i class="fa-solid fa-layer-group"></i> Plataformas</a>
+            <a href="#" onclick="showSection('capacitaciones')"><i class="fa-solid fa-graduation-cap"></i> Capacitaciones</a>
+            <a href="#" onclick="showSection('gestiones')"><i class="fa-solid fa-list-check"></i> Gestiones</a>
+            <a href="#" onclick="showSection('procedimientos')"><i class="fa-solid fa-file-contract"></i> Procedimientos</a>
+            <a href="cmx-hub.html" class="text-gray-900">CMX AR Hub</a>
+        </div>
+    </nav>
+
+    <!-- 1. INICIO: CARRUSEL 9 SLIDES CON IMÁGENES REALES -->
+    <main id="inicio" class="page-section !p-0 active">
+        <div class="swiper swiper-main">
+            <div class="swiper-wrapper">
+                
+                <!-- Slide 1: Minexus (Imagen: Equipo en oficina) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_1.jpg" class="slide-img" alt="Oficina Rio Tinto"> <!-- Reemplazar por tu foto 4 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box">
+                            <h2 class="text-4xl font-extrabold mb-4 tracking-tighter">Minexus</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Accedé a Minexus, la plataforma utilizada por Rio Tinto para la gestión de contratistas. Desde allí podrás administrar habilitaciones, documentación, requisitos y otros procesos relacionados con la prestación de servicios.</p>
+                            <a href="https://login.minexus.net" target="_blank" class="btn-link">Acceder a Minexus</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Connect (Imagen: Vista aérea del sitio) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_2.jpg" class="slide-img"> <!-- Reemplazar por tu foto 3 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box">
+                            <h2 class="text-4xl font-extrabold mb-4 tracking-tighter">Rio Tinto Connect</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">El enlace directo y abierto al que los contratistas pueden acceder para obtener información de referencia, procedimientos, enlaces útiles, contactos, entre otros recursos de utilidad para su gestión. ¡No dudés en compartir este enlace con tus contratistas!</p>
+                            <a href="https://connect.riotinto.com/content/page/653bdd33fd36c72c5e36836e?language=es_ES" target="_blank" class="btn-link">Acceder a Rio Tinto Connect</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: MITTI (Imagen: Camioneta Seguridad Vial) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_3.jpg" class="slide-img"> <!-- Reemplazar por tu foto 2 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box">
+                            <h2 class="text-4xl font-extrabold mb-4 tracking-tighter">MITTI / Forewood</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Si el contrato contempla actividades por más de 30 días, asegurate de que los supervisores y líderes del contratista cuenten con acceso a SafetyCulture / MITTI y Forewood. Estas plataformas son fundamentales para el seguimiento del desempeño y cumplimiento de HSE.</p>
+                            <a href="https://app.safetyculture.com" target="_blank" class="btn-link">Gestionar accesos</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Guía (Imagen: Galpón "Un Rincón Un Equipo") -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_4.jpg" class="slide-img"> <!-- Reemplazar por tu foto 1 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box">
+                            <h2 class="text-3xl font-extrabold mb-4 tracking-tighter">Guía de Habilitación</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">El recorrido definitivo que te guiará paso a paso en la obtención de la habilitación en la plataforma Minexus. Recomendado para dueños de contrato, administradores y líderes para comprender el proceso integral.</p>
+                            <a href="https://guia-minexus-v1-2.pages.dev/#/" target="_blank" class="btn-link">Abrir Guía interactiva</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 5: Capacitación CMX (Imagen: Planta Rio Tinto azul) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_5.jpg" class="slide-img"> <!-- Reemplazar por tu foto 7 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box">
+                            <h2 class="text-3xl font-extrabold mb-4 tracking-tighter">Capacitación CMX</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Introducción al marco CMX para la excelencia en la gestión de contratistas. Material de referencia ineludible para introducirte a las prácticas clave de tu rol como dueño de contrato.</p>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-link">Acceder en WorkDay</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 6: KP2 (Imagen: Campamento planta lejos) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_6.jpg" class="slide-img"> <!-- Reemplazar por tu foto 5 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box border-l-4 border-rt-blue">
+                            <h2 class="text-2xl font-extrabold mb-4 tracking-tighter text-rt-blue">Video KP2: Kick-off</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Conocé el proceso para registrar correctamente las Reuniones de Implementación (Kick-off) en SafetyCulture / MITTI. Requisito obligatorio para nuevos contratos y cambios de alcance.</p>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-link">Ver Video en WD</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 7: KP3 (Imagen: Camino con tubería) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_7.jpg" class="slide-img"> <!-- Reemplazar por tu foto 6 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box border-l-4 border-rt-blue">
+                            <h2 class="text-2xl font-extrabold mb-4 tracking-tighter text-rt-blue">Video KP3: Verificación</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Aprendé cómo completar correctamente la Verificación de Gestión de Contratistas (KP3) en la plataforma SafetyCulture / MITTI.</p>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-link">Ver Video en WD</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 8: KP4 (Imagen: Recepción con logo gris) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_8.jpg" class="slide-img"> <!-- Reemplazar por tu foto 8 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box border-l-4 border-rt-blue">
+                            <h2 class="text-2xl font-extrabold mb-4 tracking-tighter text-rt-blue">Video KP4: Desempeño</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Aprendé cómo realizar y registrar correctamente la Reunión de Gestión de Desempeño de Contratistas (KP4) para el seguimiento de KPI's.</p>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-link">Ver Video en WD</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 9: PtW (Imagen: Montacargas en capacitación) -->
+                <div class="swiper-slide">
+                    <img src="./assets/Imagen_9.jpg" class="slide-img"> <!-- Reemplazar por tu foto 9 -->
+                    <div class="absolute inset-0 flex items-center px-8 md:px-32">
+                        <div class="info-box border-l-4 border-rt-blue">
+                            <h2 class="text-2xl font-extrabold mb-4 tracking-tighter text-rt-blue">Video PtW: Permisos</h2>
+                            <p class="text-gray-500 leading-relaxed text-sm">Gestión y registro de Permisos de Trabajo (PtW) en SafetyCulture. Identificá riesgos y verificá controles según los estándares de seguridad de Rio Tinto Rincón.</p>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-link">Ver Video en WD</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- CONTROLES MANUALES -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </main>
+
+    <!-- 2. PLATAFORMAS (Íntegro) -->
+    <section id="plataformas" class="page-section">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-5xl font-extrabold tracking-tighter mb-4 text-center">Plataformas</h2>
+            <p class="text-center text-gray-400 mb-16 text-lg">Accedé rápidamente a enlaces, herramientas y recursos para apoyar tu gestión.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card-apple">
+                    <h3 class="text-xl font-bold mb-2">Minexus</h3>
+                    <p class="text-gray-500 text-sm mb-6">Administrá habilitaciones, documentación, requisitos y otros procesos relacionados con la prestación de servicios.</p>
+                    <a href="https://login.minexus.net" target="_blank" class="btn-link">Acceder a Minexus</a>
+                </div>
+                <div class="card-apple">
+                    <h3 class="text-xl font-bold mb-2">Rio Tinto Vendor Portal</h3>
+                    <p class="text-gray-500 text-sm mb-6">Registrá tu empresa para formar parte de la base de proveedores y ser considerado en oportunidades de contratación.</p>
+                    <a href="http://riotintoportaldeproveedores.com/auth/login" target="_blank" class="btn-link">Acceder al Portal</a>
+                </div>
+                <div class="card-apple">
+                    <h3 class="text-xl font-bold mb-2">Rio Tinto Connect</h3>
+                    <p class="text-gray-500 text-sm mb-6">Enlace directo para obtener información de referencia, procedimientos, enlaces útiles y contactos para contratistas.</p>
+                    <a href="https://connect.riotinto.com/content/page/653bdd33fd36c72c5e36836e?language=es_ES" target="_blank" class="btn-link">Acceder a Connect</a>
+                </div>
+                <div class="card-apple">
+                    <h3 class="text-xl font-bold mb-2">Safety Culture / MITI</h3>
+                    <p class="text-gray-500 text-sm mb-6">Gestión de inspecciones de seguridad, observaciones, hallazgos y acciones de mejora en las operaciones.</p>
+                    <a href="https://app.safetyculture.com" target="_blank" class="btn-link">Acceder a Safety Culture</a>
+                </div>
+                <div class="card-apple md:col-span-2">
+                    <h3 class="text-xl font-bold mb-2 text-center">Forewood</h3>
+                    <p class="text-gray-500 text-sm mb-6 text-center">Plataforma para la gestión de Critical Risk Management (CRM), administración de controles y riesgos críticos.</p>
+                    <div class="text-center"><a href="https://id.riotinto.forwoodsafety.com/" target="_blank" class="btn-link">Acceder a Forewood</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. CAPACITACIONES (Íntegro) -->
+    <section id="capacitaciones" class="page-section">
+        <div class="container mx-auto px-4 max-w-4xl text-center">
+            <h2 class="text-5xl font-extrabold tracking-tighter mb-16">Capacitaciones</h2>
+            <div class="space-y-8">
+                <div class="card-apple text-left">
+                    <h3 class="text-2xl font-bold mb-3">Guía para obtener la habilitación en Minexus</h3>
+                    <p class="text-gray-500 leading-relaxed mb-6 text-sm">Recorrido que te guiará paso a paso en la obtención de la habilitación. Se recomienda que los dueños de contrato, administradores y líderes lo consulten para gestionar más eficazmente sus responsabilidades.</p>
+                    <a href="https://guia-minexus-v1-2.pages.dev/#/" target="_blank" class="btn-link">Acceder a Guía</a>
+                </div>
+                <div class="card-apple text-left">
+                    <h3 class="text-2xl font-bold mb-3">Enlaces a capacitaciones en WorkDay</h3>
+                    <p class="text-gray-500 leading-relaxed mb-6 text-sm">Si sos dueño de contrato ó líder designado, te recomendamos consultar las capacitaciones obligatorias en Workday, incluyendo el marco CMX y prácticas clave para tu rol.</p>
+                    <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-link">Acceder a WorkDay</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. GESTIONES (Íntegro) -->
+    <section id="gestiones" class="page-section">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-5xl font-extrabold tracking-tighter mb-16 text-center">Gestiones</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card-apple">
+                    <h3 class="font-bold text-xl mb-2">Clasificación de Arquetipos SGC</h3>
+                    <p class="text-sm text-gray-500 mb-4">Herramienta para identificar el arquetipo correcto y definir la matriz documental aplicable según la Orden de Compra.</p>
+                    <a href="https://rubenemilio009-beep.github.io/asistente-arquetipos-v.1.4/" target="_blank" class="btn-link">Abrir Asistente</a>
+                    <p class="note-text">Nota: Use esta herramienta como una guía.</p>
+                </div>
+                <div class="card-apple">
+                    <h3 class="font-bold text-xl mb-2">Auditoría Prioritaria en Minexus</h3>
+                    <p class="text-sm text-gray-500 mb-4">Formulario de solicitud gestionado exclusivamente por Dueños de Contrato o Administradores Responsables.</p>
+                    <a href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=gN9BQ-b7v0GJsObiN5ycI4Q9idWGN11AuBr8XhI_KrNUQkJKVFJJOFdSUzdTUkpOMEVJVzlQQUVaNi4u&route=shorturl" target="_blank" class="btn-link">Solicitar Auditoría</a>
+                </div>
+                <div class="card-apple">
+                    <h3 class="font-bold text-xl mb-2">Seguro de Accidentes Personales</h3>
+                    <p class="text-sm text-gray-500 mb-4">Cobertura excepcional para contratistas extranjeros o visitas institucionales específicas.</p>
+                    <a href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=gN9BQ-b7v0GJsObiN5ycI4Q9idWGN11AuBr8XhI_KrNUNkkzSVdES05KRTNNQ1JFRzhZT0YwVDRDUy4u&route=shorturl" target="_blank" class="btn-link">Solicitar Inclusión</a>
+                </div>
+                <div class="card-apple">
+                    <h3 class="font-bold text-xl mb-2">No aplicabilidad en Minexus</h3>
+                    <p class="text-sm text-gray-500 mb-4">Emisión de Nota de No Aplicabilidad mediante validación previa con áreas competentes.</p>
+                    <a href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=gN9BQ-b7v0GJsObiN5ycI4Q9idWGN11AuBr8XhI_KrNUOTdNMDlaQk9PWlBFRU5KQkRCSEhNUUJLMS4u&route=shorturl" target="_blank" class="btn-link">Formulario de Solicitud</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PROCEDIMIENTOS (ENLACE CORRECTO Y BOTÓN AZUL) -->
+    <section id="procedimientos" class="page-section">
+        <div class="container mx-auto px-4 max-w-4xl text-center">
+            <h2 class="text-5xl font-extrabold tracking-tighter mb-12">Procedimientos</h2>
+            <div class="bg-gray-50 p-12 rounded-[40px] border border-gray-100">
+                <p class="text-gray-500 text-lg leading-relaxed mb-10">
+                    Accedé rápidamente a las políticas y procedimientos vigentes del área de Gestión de Contratistas de Rio Tinto. Aseguramos una gestión consistente, estandarizada y alineada con los requisitos, controles y estándares corporativos globales.
+                </p>
+                <a href="https://riotinto.sharepoint.com/sites/5061193/SitePages/es/OPR-CMP-Site%20Access.aspx?csf=1&web=1&e=ZqoiCS&xsdata=MDV8MDJ8fDNmMGE5YTk0ZDYyMDQ3ZWQzZDNmMDhkZDY1NTViZDRlfDQzNDFkZjgwZmJlNjQxYmY4OWIwZTZlMjM3OWM5YzIzfDB8MHw2Mzg3NzgxNDEwNzkxMjUzMTF8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazkwYUdWeUlpd2lWMVFpT2pFeGZRPT18MXxMMk5vWVhSekx6RTVPakl6TXpCbFlUSTFMVFZrTUdZdE5HVTRNeTA0T0dNd0xUQXlObUprTWpaaVlUTmpaVjlrTlRnNU0yUTROQzB6TnpnMkxUUXdOV1F0WWpneFlTMW1ZelZsTVRJelpqSmhZak5BZFc1eExtZGliQzV6Y0dGalpYTXZiV1Z6YzJGblpYTXZNVGMwTWpJeE56TXdOek15TVE9PXxlMjQ3M2FjM2EwYzQ0ZTE2M2QzZjA4ZGQ2NTU1YmQ0ZXwyMjk1ZTk2OTYxY2E0NWU1YTRkZGJhNmYwZGU4MzhkZg%3D%3D&sdata=RDE3K1B6SWZBTy9WQWl2cFMvaVBSK2FDK0ZKRE9pb0MydjdJVnZDQjFTaz0%3D&ovuser=4341df80-fbe6-41bf-89b0-e6e2379c9c23%2CRuben.Tejerina%40riotinto.com&OR=Teams-HL&CT=1742217343066&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI0OS8yNTAyMTQwMDkxMyIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D" 
+                   target="_blank" class="btn-repo">
+                    <i class="fa-solid fa-folder-open mr-3"></i> Repositorio Documental SharePoint
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Inicialización de Swiper con controles manuales y auto de 10s
+        const swMain = new Swiper(".swiper-main", { 
+            loop: true, 
+            speed: 1200,
+            autoplay: { delay: 10000, disableOnInteraction: false },
+            pagination: { el: ".swiper-pagination", clickable: true },
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            effect: 'fade',
+            fadeEffect: { crossFade: true }
+        });
+
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
