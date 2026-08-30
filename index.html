@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --rt-red: #ED1C24;
@@ -16,6 +16,8 @@
             --rt-dark: #1D1D1F;
             --rt-bg: #FFFFFF;
             --rt-secondary-bg: #F5F5F7;
+            --rt-gray: #86868b;
+            --rt-accent: #f5f5f7;
         }
 
         body { 
@@ -111,6 +113,88 @@
         }
         .btn-repo:hover { background-color: var(--rt-navy); transform: scale(1.03); }
         .note-text { font-size: 0.85rem; color: #86868b; font-style: italic; margin-top: 1rem; }
+
+        /* ===== CMX AR HUB (sección integrada) ===== */
+        /* Reglas con prefijo .swiper-info / #cmx-hub para no afectar el carrusel de "Inicio" */
+        .swiper-info { width: 100%; height: 550px; border-radius: 32px; background: var(--rt-bg); border: 1px solid #f0f0f2; position: relative; overflow: hidden; }
+        .swiper-info .swiper-slide { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            padding: 0 10%; 
+            box-sizing: border-box;
+            background: var(--rt-bg);
+        }
+
+        #cmx-hub .bg-watermark {
+            position: absolute;
+            right: -5%;
+            bottom: -5%;
+            font-size: 25rem;
+            color: var(--rt-dark);
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Controles Manuales */
+        #cmx-hub .nav-btn {
+            width: 50px; height: 50px;
+            background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--rt-dark);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            z-index: 50; border: 1px solid #f0f0f2;
+        }
+        #cmx-hub .nav-btn:hover { transform: scale(1.1); color: var(--rt-blue); }
+
+        /* Timeline Vertical Exacta KP1 a KP4 */
+        #cmx-hub .timeline-container { position: relative; padding-left: 120px; }
+        #cmx-hub .vertical-line {
+            position: absolute;
+            left: 45px;
+            top: 45px; /* Empieza en centro de KP1 */
+            bottom: 45px; /* Termina en centro de KP4 */
+            width: 2px;
+            background: #d2d2d7;
+            z-index: 1;
+        }
+        #cmx-hub .kp-block { position: relative; z-index: 2; margin-bottom: 120px; }
+        #cmx-hub .kp-badge {
+            position: absolute;
+            left: -120px;
+            width: 90px; height: 90px;
+            background: white;
+            border: 3px solid var(--rt-blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; color: var(--rt-blue);
+            box-shadow: 0 0 0 12px white;
+        }
+
+        /* Botón Estilo Apple (CMX AR Hub) */
+        #cmx-hub .btn-apple {
+            background: var(--rt-dark);
+            color: white !important;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none !important;
+            border: 1px solid var(--rt-dark);
+        }
+        #cmx-hub .btn-apple:hover { background: transparent; color: var(--rt-dark) !important; transform: translateY(-1px); }
+
+        #cmx-hub .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s ease-out; }
+        #cmx-hub .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Indicadores (circulitos) del carrusel CMX AR Hub */
+        .swiper-info .swiper-pagination-bullet-active { background: var(--rt-blue) !important; width: 25px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -137,7 +221,7 @@
             <a href="#" onclick="showSection('capacitaciones')"><i class="fa-solid fa-graduation-cap"></i> Capacitaciones</a>
             <a href="#" onclick="showSection('gestiones')"><i class="fa-solid fa-list-check"></i> Gestiones</a>
             <a href="#" onclick="showSection('procedimientos')"><i class="fa-solid fa-file-contract"></i> Procedimientos</a>
-            <a href="cmx-hub.html" class="text-gray-900">CMX AR Hub</a>
+            <a href="#" onclick="showSection('cmx-hub')"><i class="fa-solid fa-share-nodes"></i> CMX AR Hub</a>
         </div>
     </nav>
 
@@ -362,10 +446,189 @@
         </div>
     </section>
 
+    <!-- 6. CMX AR HUB (integrado desde ai_studio_code (12).html — contenido sin alterar) -->
+    <section id="cmx-hub" class="page-section">
+
+        <!-- NAV interna del Hub (se quitó "sticky" para no competir con la barra de navegación principal; logo, texto e íconos intactos) -->
+        <header class="py-6 px-10 flex justify-between items-center bg-white border-b border-gray-100">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Rio_Tinto_logo.svg/2560px-Rio_Tinto_logo.svg.png" alt="Rio Tinto" class="h-8">
+            <span class="text-[10px] font-black tracking-widest text-gray-400 uppercase">CMX AR Hub</span>
+        </header>
+
+        <!-- HERO: Carrusel 4 Slides - Auto 5s + Manual -->
+        <section class="py-16 px-6 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-8 relative">
+                    <div class="swiper swiper-info">
+                        <div class="swiper-wrapper">
+                            <!-- Slide 1 -->
+                            <div class="swiper-slide">
+                                <i class="fa-solid fa-triangle-exclamation bg-watermark"></i>
+                                <div class="relative z-10">
+                                    <h3 class="text-5xl font-black tracking-tighter mb-8">¿Sabías que?</h3>
+                                    <p class="text-xl text-rt-gray leading-relaxed mb-6">Los contratistas realizan algunos de nuestros trabajos de mayor riesgo. Representan más del 40% de nuestras horas de exposición. Gastamos miles de millones en su trabajo.</p>
+                                    <p class="text-xl font-bold text-rt-dark">Son una parte fundamental de nuestra empresa y nos ayudan a cumplir nuestros objetivos.</p>
+                                </div>
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="swiper-slide">
+                                <i class="fa-solid fa-handshake-angle bg-watermark"></i>
+                                <div class="relative z-10">
+                                    <h3 class="text-4xl font-black tracking-tighter mb-8 leading-tight">Un principio sencillo guía cómo gestionamos a nuestras contratistas:</h3>
+                                    <p class="text-2xl italic text-rt-blue mb-8 leading-snug">“Un trabajo bien planeado es un trabajo seguro, un trabajo seguro es un trabajo productivo.”</p>
+                                    <p class="text-xl text-rt-gray leading-relaxed">Mediante un enfoque claro y coherente, brindándoles capacitación y asesoramiento. Estableciendo alianzas sólidas para lograr mejores resultados.</p>
+                                </div>
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="swiper-slide">
+                                <i class="fa-solid fa-shield-halved bg-watermark"></i>
+                                <div class="relative z-10">
+                                    <h3 class="text-5xl font-black tracking-tighter mb-8">¿Sabías que?</h3>
+                                    <p class="text-xl text-rt-gray leading-relaxed">La utilización consistente del <strong>Permiso de Trabajo (PtW)</strong> y de la <strong>Verificación de Gestión de Contratistas (KP3)</strong> permite a los Dueños de Contrato y Líderes Designados ejercer una supervisión efectiva y promover una gestión alineada con la excelencia operacional.</p>
+                                </div>
+                            </div>
+                            <!-- Slide 4 -->
+                            <div class="swiper-slide">
+                                <i class="fa-solid fa-clipboard-check bg-watermark"></i>
+                                <div class="relative z-10">
+                                    <h3 class="text-5xl font-black tracking-tighter mb-8">¿Sabías que?</h3>
+                                    <p class="text-xl font-bold mb-4">Al finalizar un contrato, es tu responsabilidad asegurar que:</p>
+                                    <ul class="text-lg text-rt-gray space-y-2 mb-6">
+                                        <li>• Se hayan cumplido todos nuestros compromisos.</li>
+                                        <li>• Que el contrato haya aportado el valor prometido.</li>
+                                        <li>• Dar de baja al proveedor y a su personal.</li>
+                                        <li>• Aprender de la experiencia del proyecto.</li>
+                                    </ul>
+                                    <p class="text-rt-dark font-medium italic text-lg">De tu compromiso con el uso de las herramientas clave, depende el desarrollo de nuestros socios.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Paginación (Circulitos) -->
+                        <div class="swiper-pagination !bottom-10"></div>
+                    </div>
+                    <!-- Controles Manuales -->
+                    <div class="flex gap-4 absolute bottom-10 right-10 z-50">
+                        <button class="nav-btn prev-info"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-btn next-info"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Assistant Sidebar -->
+                <div class="lg:col-span-4 bg-white p-12 rounded-[40px] border border-gray-100 shadow-sm text-center">
+                    <span class="text-[10px] font-black tracking-[0.2em] text-rt-gray mb-8 block uppercase">Sección en desarrollo</span>
+                    <h4 class="text-3xl font-bold mb-6 tracking-tight">CMX Assistant</h4>
+                    <p class="text-rt-gray text-sm leading-relaxed mb-10">Escaneá el código QR para acceder al asistente IA que te permitirá resolver consultas sobre el marco CMX.</p>
+                    <div class="bg-rt-accent p-10 rounded-3xl flex justify-center border border-gray-50 shadow-inner">
+                        <i class="fa-solid fa-qrcode text-7xl text-gray-200"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HUB INTRO -->
+        <section class="py-20 bg-white text-center">
+            <div class="max-w-4xl mx-auto px-6 reveal">
+                <h2 class="text-6xl font-black tracking-tighter mb-10">CMX AR Hub</h2>
+                <p class="text-2xl text-rt-gray leading-relaxed">Accedé al CMX Hub, el espacio centralizado que reúne herramientas, recursos, información y accesos clave para gestionar contratistas de acuerdo a los lineamientos del marco para la Excelencia en la Gestión de Contratistas (CMX).</p>
+            </div>
+        </section>
+
+        <!-- CAPACITACIÓN Y ESTRATEGIA -->
+        <section class="py-12 px-6 max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+            <div class="bg-rt-accent p-12 rounded-[48px] reveal">
+                <h3 class="text-2xl font-bold mb-6">Capacitación CMX Global</h3>
+                <p class="text-rt-gray mb-10 text-sm">La introducción al marco CMX para la excelencia en la gestión de contratistas, es una capacitación que te ayudará a comprender y desempeñar eficazmente tu rol.</p>
+                <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-apple">
+                    <i class="fa-solid fa-graduation-cap"></i> Acceder a Workday
+                </a>
+            </div>
+            <div class="bg-rt-accent p-12 rounded-[48px] reveal">
+                <h3 class="text-2xl font-bold mb-6">Estrategia Global</h3>
+                <p class="text-rt-gray mb-10 text-sm">Estrategia centrada en desarrollar e integrar las capacidades, las prácticas efectivas y los controles críticos necesarios para aportar el máximo valor.</p>
+                <a href="#" class="btn-apple">
+                    <i class="fa-solid fa-file-arrow-down"></i> Descargar estrategia
+                </a>
+            </div>
+        </section>
+
+        <!-- PILARES -->
+        <section class="py-20 bg-white">
+            <div class="max-w-6xl mx-auto px-6">
+                <h2 class="text-center text-4xl font-black mb-16 reveal">Pilares de la estrategia de CMX</h2>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="bg-rt-accent p-12 rounded-[48px] reveal">
+                        <h3 class="text-2xl font-bold mb-6">Estructura</h3>
+                        <p class="text-rt-gray leading-relaxed text-sm">El equipo de gestión de contratistas, dueños de contrato y líderes designados, trabajando con un enfoque coherente, impulsando la mejora continua mediante la aplicación de procesos coherentes.</p>
+                    </div>
+                    <div class="bg-rt-accent p-12 rounded-[48px] reveal">
+                        <h3 class="text-2xl font-bold mb-6">Capacidad</h3>
+                        <p class="text-rt-gray leading-relaxed mb-10 text-sm">Debemos asegurarnos de que nuestros líderes cuenten con el apoyo necesario a través de puestos de gestión de contratistas con responsabilidades claras y formalizadas.</p>
+                        <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-apple">
+                            <i class="fa-solid fa-link"></i> Acceder a Workday
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRÁCTICAS CLAVE -->
+        <section class="py-32 bg-white overflow-hidden">
+            <div class="max-w-5xl mx-auto px-6">
+                <h2 class="text-center text-5xl font-black mb-32 reveal">Prácticas Clave</h2>
+                
+                <div class="timeline-container">
+                    <div class="vertical-line"></div>
+
+                    <div class="kp-block reveal">
+                        <div class="kp-badge shadow-sm">KP1</div>
+                        <h3 class="text-2xl font-bold mb-6">Práctica Clave 1: Desarrollar el alcance del trabajo</h3>
+                        <p class="text-rt-gray leading-relaxed max-w-3xl mb-4">Una contratación efectiva comienza con una definición clara del alcance del trabajo. Esto incluye identificar los riesgos asociados, asignar responsables y establecer una estrategia de contratación que garantice el cumplimiento de los requisitos de seguridad, costos y productividad.</p>
+                        <p class="text-rt-dark font-medium italic text-sm">¿Quiénes pueden ayudarte? El equipo local de RTP (Rio Tinto Procurement) y el equipo de Gestión de Contratistas.</p>
+                    </div>
+
+                    <div class="kp-block reveal">
+                        <div class="kp-badge shadow-sm">KP2</div>
+                        <h3 class="text-2xl font-bold mb-6">Práctica Clave 2: Poner en práctica el contrato</h3>
+                        <p class="text-rt-gray leading-relaxed max-w-3xl text-sm">El objetivo de esta etapa es formalizar, mediante un documento contractual, los compromisos y responsabilidades tanto del proveedor como de Rio Tinto, asegurando que las expectativas sean claras.</p>
+                        <p class="mt-4 text-rt-dark font-medium italic text-sm">Incluye la Reunión de Implementación (Kickoff Meeting) antes de la movilización al sitio.</p>
+                    </div>
+
+                    <div class="kp-block reveal">
+                        <div class="kp-badge shadow-sm">KP3</div>
+                        <h3 class="text-2xl font-bold mb-6">Práctica Clave 3: Verificar el trabajo realizado</h3>
+                        <p class="text-rt-gray leading-relaxed max-w-3xl mb-10 text-sm">Para garantizar que el trabajo se ejecute de acuerdo a lo establecido en el contrato, supervisando el trabajo de campo día a día mediante el <strong>Permiso de Trabajo (PtW)</strong> y la <strong>Verificación de Gestión (KP3)</strong>.</p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://app.safetyculture.com/inspections" target="_blank" class="btn-apple"><i class="fa-solid fa-up-right-from-square"></i> Safety Culture / MITTI</a>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-apple"><i class="fa-solid fa-graduation-cap"></i> Capacitación PtW</a>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-apple"><i class="fa-solid fa-graduation-cap"></i> Capacitación KP3</a>
+                        </div>
+                    </div>
+
+                    <div class="kp-block reveal">
+                        <div class="kp-badge shadow-sm">KP4</div>
+                        <h3 class="text-2xl font-bold mb-6">Práctica Clave 4: Evaluar el desempeño</h3>
+                        <p class="text-rt-gray leading-relaxed max-w-3xl mb-10 text-sm">Es tu responsabilidad gestionar activamente el desempeño de los proveedores mediante revisiones periódicas y reuniones de desempeño (KP4), proporcionando una agenda estructurada y un diálogo bidireccional.</p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://app.safetyculture.com/inspections" target="_blank" class="btn-apple"><i class="fa-solid fa-chart-line"></i> Safety Culture / MITTI</a>
+                            <a href="https://wd3.myworkday.com/riotinto/d/home.htmld" target="_blank" class="btn-apple"><i class="fa-solid fa-graduation-cap"></i> Capacitación KP4</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="py-12 border-t border-gray-100 text-center bg-rt-accent">
+            <p class="text-[10px] font-black uppercase tracking-[0.5em] text-gray-300">Excelencia en la Gestión de Contratistas</p>
+        </footer>
+
+    </section>
+
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Inicialización de Swiper con controles manuales y auto de 10s
+        // Inicialización de Swiper con controles manuales y auto de 10s (carrusel "Inicio")
         const swMain = new Swiper(".swiper-main", { 
             loop: true, 
             speed: 1200,
@@ -376,11 +639,41 @@
             fadeEffect: { crossFade: true }
         });
 
+        // Inicialización de Swiper del carrusel "CMX AR Hub" (auto-cambio cada 5 segundos)
+        const swInfo = new Swiper('.swiper-info', {
+            loop: true,
+            speed: 800,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: '.next-info',
+                prevEl: '.prev-info',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+
         function showSection(id) {
             document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Animación de aparición ("reveal") de los bloques del CMX AR Hub
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) el.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
     </script>
 </body>
 </html>
